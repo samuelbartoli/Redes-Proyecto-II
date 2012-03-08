@@ -1,18 +1,9 @@
 import java.util.*;
 import java.io.*;
 import java.net.*;
+//import nanoxml.*;
 
 public class servcert{
-
-   /* ArrayList<Certf> Cert;
-    String Dir;
-    //int listenPort;
-    //int buscPort;
-
-    public servcert(String dir){
-        Dir=dir;
-        Cert=abrirdir(dir);
-    }*/
 
     public static void main(String args[]){
         int servport = 5000;
@@ -58,7 +49,7 @@ public class servcert{
         }
 
         //LLeno la lista de certificados
-        ArrayList<Certf> lc = new ArrayList<Certf>();
+        List<Certf> lc = Collections.synchronizedList(new ArrayList<Certf>());
         Certf c = new Certf();
         File f = new File(dir);
 
@@ -96,7 +87,7 @@ public class servcert{
             }
 
             try{
-                Certf.log("recibi un cliente");
+                //Certf.log("recibi un cliente");
                 Thread t = new Thread(new servThread(listsocket.accept(),lc));
                 t.start();
             }catch(IOException e){

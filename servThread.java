@@ -1,32 +1,18 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+//import nanoxml.*;
 
 public class servThread implements Runnable{
 
     Socket Client;
-    ArrayList<Certf> Cert;
+    List<Certf> Cert;
 
-    public servThread(Socket client, ArrayList<Certf> cert){
+    public servThread(Socket client, List<Certf> cert){
         
         this.Client=client;
         this.Cert = cert;
     }
-
-    /*public busThread(String[] st){
-        s=st;
-    }*/ 
-
-    /*try{
-            Certf.log(s[0]+"hijo");
-            this.s[0]="adasdsad";
-            Certf.log(s[0]+"hijo");
-            Thread.sleep(10000);
-            Certf.log(s[0]+"hijo");
-        }catch(InterruptedException x){
-            Certf.log("asdasd");
-        }*/
-
 
     public void run(){
 
@@ -36,7 +22,6 @@ public class servThread implements Runnable{
 
             String fromBusq = "";
             String query = "";
-            String cert = "";
             Certf c = new Certf();
             ArrayList<String []> q = new ArrayList<String[]>();
             ArrayList<String> encontrados = new ArrayList<String>();
@@ -52,11 +37,11 @@ public class servThread implements Runnable{
             
             if(fromBusq!=null && fromBusq.equals("BUSCADOR")){
                 while(!(fromBusq = in.readLine()).equals("ENDBUSCADOR")){
-                    Certf.log("fromBusq "+fromBusq);
+                    //Certf.log("fromBusq "+fromBusq);
                     //Leo el query
                     query = query+fromBusq;
 
-                    Certf.log("serv recibi "+query);
+                    Certf.log("Recibi una solicitud");
 
                     //Transformo el xml en query manejable
                     c.xml2query(query,q);
@@ -71,7 +56,7 @@ public class servThread implements Runnable{
 
                     //Busco los Certificados
                     c.searchCert(q,Cert,encontrados);
-                    Certf.log(encontrados.size());
+                    Certf.log("Certificados encontrados:");
                     for(String r : encontrados){
                         Certf.log(r);
                     }

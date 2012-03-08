@@ -1,13 +1,13 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
+//import nanoxml.*;
 
 public class buscert{
 
     public static void main(String args[]){
         int port = 4000;
         ServerSocket busqsocket = null;
-        Socket server = null; 
 
         if(args.length==2 && args[0].equals("-p")){
             port = Integer.parseInt(args[1]);
@@ -23,12 +23,14 @@ public class buscert{
         }
 
         boolean listening=true;
-        ArrayList<String []> servidores = new ArrayList<String []>(); 
-        ArrayList<String []> clientes = new ArrayList<String []>(); 
-        ArrayList<String []> certificados = new ArrayList<String []>();
+        List<String []> servidores = Collections.synchronizedList(new ArrayList<String []>()); 
+        List<String []> clientes = Collections.synchronizedList(new ArrayList<String []>()); 
+        List<String []> certificados = Collections.synchronizedList(new ArrayList<String []>());
 
         Thread est = new Thread(new busThread(servidores,clientes,certificados,1));
+        Thread check = new Thread(new busThread(servidores,0));
         est.start(); 
+        check.start(); 
 
         while(listening){
 
@@ -42,7 +44,7 @@ public class buscert{
             }
 
             try{
-                Certf.log("recibi un cliente");
+                //Certf.log("recibi un cliente");
                 Thread t = new Thread(new busThread(busqsocket.accept(),servidores,clientes,certificados,2));
                 t.start();
             }catch(IOException e){

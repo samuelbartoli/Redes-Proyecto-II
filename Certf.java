@@ -17,7 +17,7 @@ public class Certf{
     public void printcert(){
         log(this.Fname);
 
-        ListIterator it = this.Fields.listIterator();
+        ListIterator<String> it = this.Fields.listIterator();
         while(it.hasNext()){
             log(it.next());
         }
@@ -93,7 +93,7 @@ public class Certf{
     }
 
 
-    public void abrirdir(File dir,ArrayList<Certf> L) throws NullPointerException{
+    public void abrirdir(File dir,List<Certf> L) throws NullPointerException{
         Certf cer;
         File files[] = dir.listFiles();
         if(files == null){
@@ -148,16 +148,16 @@ public class Certf{
         String content="";
         String aux="";
         int i=0;
-        Vector v = new Vector();
+        Vector<XMLElement> v = new Vector<XMLElement>();
 
         XMLElement certf = new XMLElement();
-        try{
+        //try{
             certf.parseString(certxml);
-        }catch(XMLParseException e){
-            log(e.getMessage());
-        }
+        //}catch(XMLParseException e){
+            //log(e.getMessage());
+        //}
 
-        v = certf.getChildren();
+        v = (Vector<XMLElement>)certf.getChildren();
 
         fname = ((XMLElement)v.get(0)).getName();
         content = ((XMLElement)v.get(0)).getContent();
@@ -189,23 +189,23 @@ public class Certf{
     }
 
     public String xmlName(String certxml){
-        Vector v = new Vector();
+        Vector<XMLElement> v = new Vector<XMLElement>();
 
         XMLElement certf = new XMLElement();
-        try{
+        //try{
             certf.parseString(certxml);
-        }catch(XMLParseException e){
-            log(e.getMessage());
-        }
+        //}catch(XMLParseException e){
+        //    log(e.getMessage());
+        //}
 
-        v = certf.getChildren();
+        v = (Vector<XMLElement>)certf.getChildren();
 
         return ((XMLElement)v.get(0)).getName();
 
     }
 
     public boolean hasChildren(XMLElement x, String a){
-        Vector v = x.getChildren();
+        Vector<XMLElement> v = (Vector<XMLElement>)x.getChildren();
         if(v!=null){
             for(int i=0; i<v.size(); i++){
                 if(a.equals(((XMLElement)v.get(i)).getName())){
@@ -318,7 +318,7 @@ public class Certf{
         qy.addChild(fing);
 
         Vector<XMLElement> v = new Vector<XMLElement>();
-        v = qy.getChildren();
+        v = (Vector<XMLElement>)qy.getChildren();
 
         for(XMLElement e : v){
            if(!e.getContent().equals("")){
@@ -352,8 +352,8 @@ public class Certf{
         
     }
 
-    public void searchCert(ArrayList<String[]> query, ArrayList<Certf> cert, 
-                                ArrayList<String> find){
+    public void searchCert(List<String[]> query, List<Certf> cert, 
+                                List<String> find){
         String a[];
         Certf c;
 
@@ -403,12 +403,12 @@ public class Certf{
 
     }
 
-    public static void main(String[] args){
+    /*public static void main(String[] args){
 
-            /*xmlutils p = new xmlutils();
+            xmlutils p = new xmlutils();
             String a = p.cert2xml("server1",args[0]);
             //p.log(a);
-            p.xml2cert(a); */
+            p.xml2cert(a);
 
             File dir = new File(args[0]);
             Certf c = new Certf();
@@ -453,6 +453,6 @@ public class Certf{
                 asd=encontrados.get(i);
                 log(asd);
             }
-    }
+    }*/
 
 }

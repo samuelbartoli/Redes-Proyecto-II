@@ -1,16 +1,17 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+//import nanoxml.*;
 
 public class busThread implements Runnable{
 
     Socket client=null;
-    ArrayList<String []> Serv;
-    ArrayList<String []> Cli;
-    ArrayList<String []> Cert;
+    List<String []> Serv;
+    List<String []> Cli;
+    List<String []> Cert;
     int type;
 
-    public busThread(Socket client, ArrayList<String []> serv, ArrayList<String []> cli, ArrayList<String[]> cert, int f){
+    public busThread(Socket client, List<String []> serv, List<String []> cli, List<String[]> cert, int f){
         this.client=client;
         this.Serv=serv;
         this.Cli=cli;
@@ -18,35 +19,36 @@ public class busThread implements Runnable{
         this.type=f;
     }
 
-    public busThread(ArrayList<String []> serv, ArrayList<String []> cli, ArrayList<String[]> cert, int f){
+    public busThread(List<String []> serv, List<String []> cli, List<String[]> cert, int f){
         this.Serv=serv;
         this.Cli=cli;
         this.Cert=cert;
         this.type=f;
     }
 
-    /*public busThread(String[] st){
-        s=st;
-    }*/ 
+    public busThread(List<String []> serv, int f){
+        this.Serv=serv;
+        this.type=f;
+    } 
 
     public void certEst(String cert){
         Certf c = new Certf();
         String[] cert_= new String[2];
         cert_[0]= c.xmlName(cert);
-        Certf.log(cert_[0]);
+        //Certf.log(cert_[0]);
         int h = 0;
 
         for(String a[] : Cert){
             if(a[0].equals(cert_[0])){
                 int cant = Integer.parseInt(a[1]);
-                Certf.log(cant);
+                //Certf.log(cant);
                 a[1]=(cant+1)+"";
                 break;
             }
             h++;
         }
 
-        Certf.log(h);
+        //Certf.log(h);
         if(h==Cert.size()){
             cert_[1]="1";
             Cert.add(cert_);
@@ -112,7 +114,7 @@ public class busThread implements Runnable{
                             }
                         }
 
-                        Certf.log("Llego el query: "+query);
+                        //Certf.log("Llego el query: "+query);
 
                         //Enviamos el query a los servidores
                         for(int i=0; i < Serv.size(); i++){
@@ -151,7 +153,7 @@ public class busThread implements Runnable{
                                             c=c+fromServ;
                                         }
 
-                                        Certf.log("Llego el certificado: "+c+"\n");
+                                        //Certf.log("Llego el certificado: "+c+"\n");
 
                                         //Estadistica del certificado
                                         certEst(c);
@@ -211,16 +213,16 @@ public class busThread implements Runnable{
                            
                             if(i==Serv.size()){        
                                 Serv.add(info);
-                                Certf.log("añadi el servidor "+info[0]+" "+info[1]);
+                                Certf.log("Añadi el servidor "+info[0]+" "+info[1]+"\n");
                             }
 
-                            for(i=0; i<Serv.size(); i++){
+                            /*for(i=0; i<Serv.size(); i++){
                                 String a[]=Serv.get(i);
                                 //Certf.log(a.length);
                                 for(int j=0; j<a.length; j++){
                                     Certf.log(a[j]);
                                 }
-                            }
+                            }*/
                             
                             break;
                         }
@@ -249,7 +251,7 @@ public class busThread implements Runnable{
 
             Cli.remove(cliente);
 
-            System.out.println("termine con una solicitud");
+            //System.out.println("termine con una solicitud");
 
         }else if(this.type==1){
             //Rutina de estadisticas
@@ -315,6 +317,40 @@ public class busThread implements Runnable{
                 }
             }catch(IOException e){
                 System.err.println("Error leyendo query de estadistica");
+            }
+        }else if(this.type==0){
+
+            Socket server;
+            PrintWriter outserv;
+            BufferedReader inserv;
+
+            while(true){
+
+                try{
+                    Thread.sleep(10000);
+                }catch(InterruptedException t){
+                    Certf.log(t.getMessage());
+                }
+
+                Certf.log("Chequeando servidores");
+
+                for(int i=0; i < Serv.size(); i++){
+                    try{
+                        server = new Socket(Serv.get(i)[0], Integer.parseInt(Serv.get(i)[1]));
+                        outserv = new PrintWriter(server.getOutputStream(), true);
+                        inserv = new BufferedReader(new InputStreamReader(
+                                    server.getInputStream()));
+                    }catch(UnknownHostException u){
+                            System.err.println("Error en el serv con puerto: "+
+                                    Serv.get(i)[1]);
+                            continue;
+                    }catch(IOException y){
+                            Serv.get(i)[2]="0";
+                    }
+
+                }
+
+
             }
         }
     }

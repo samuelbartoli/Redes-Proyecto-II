@@ -1,3 +1,4 @@
+//import nanoxml.*;
 import java.io.*;
 import java.net.*;
 
@@ -73,10 +74,10 @@ public class clicert{
 
                 //Transformar la entrada en XML
                 query = cc.query2xml(userInput);
-                cc.log("cliente"+query);
+                //Certf.log("cliente"+query);
 
                 if(query.equals("")){
-                    cc.log("Solicitud inválida. Inténtelo de nuevo.");
+                    Certf.log("Solicitud inválida. Inténtelo de nuevo.");
                     continue;
                 }
             
@@ -92,7 +93,7 @@ public class clicert{
                         certific = certific+fromBus;
                     }else if(fromBus.equals("ENDCERT")){
                         //Imprimir el certificado
-                        Certf.log("Server: "+ certific);
+                        Certf.log("Certificado guardado: "+ cc.xmlName(certific) + "\n");
                         //Guardar el certificado
                         cc.xml2cert(dir,certific);
                         certific="";
